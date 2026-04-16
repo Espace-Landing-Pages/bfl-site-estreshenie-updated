@@ -115,30 +115,20 @@ const heroSection = document.querySelector("#hero");
 const stickyClose = document.querySelector("#sticky-cta-close");
 
 function dismissSticky() {
+  document.body.classList.remove("show-sticky");
   document.body.classList.add("sticky-dismissed");
-  try {
-    window.localStorage.setItem("stickyCtaDismissed", "1");
-  } catch (_error) {
-    // Ignore storage failures and just hide the block for the current session.
-  }
-}
-
-try {
-  if (window.localStorage.getItem("stickyCtaDismissed") === "1") {
-    document.body.classList.add("sticky-dismissed");
-  }
-} catch (_error) {
-  // Ignore storage failures and continue with default behavior.
 }
 
 if (stickyClose) {
   stickyClose.addEventListener("click", dismissSticky);
 }
 
-if (heroSection && "IntersectionObserver" in window && !document.body.classList.contains("sticky-dismissed")) {
+if (heroSection && "IntersectionObserver" in window) {
   const observer = new IntersectionObserver(
     ([entry]) => {
-      document.body.classList.toggle("show-sticky", !entry.isIntersecting);
+      if (!document.body.classList.contains("sticky-dismissed")) {
+        document.body.classList.toggle("show-sticky", !entry.isIntersecting);
+      }
     },
     { threshold: 0.18 }
   );
